@@ -1,4 +1,4 @@
-package tdd.args;
+package tdd.args.exceptions;
 
 public class IllegalOptionException extends RuntimeException {
     private String option;

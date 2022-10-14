@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BooleanOptionParserTest {
-
     @Test
     public void should_not_accept_extra_argument_for_boolean_option() {
         TooManyArgumentsException e = assertThrows(TooManyArgumentsException.class, () -> {
@@ -21,18 +20,17 @@ public class BooleanOptionParserTest {
     }
 
     @Test
-    public void should_set_default_value_to_false_if_option_present() {
+    public void should_set_default_value_to_true_if_option_present() {
         assertTrue(new BooleanOptionParser().parse(asList("-l"), option("l")));
     }
 
     @Test
-    public void should_set_default_value_to_true_if_option_not_present() {
+    public void should_set_default_value_to_false_if_option_not_present() {
         assertFalse(new BooleanOptionParser().parse(asList(), option("l")));
     }
 
     static Option option(String value) {
         return new Option() {
-
             @Override
             public Class<? extends Annotation> annotationType() {
                 return Option.class;

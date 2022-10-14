@@ -1,13 +1,13 @@
 package tdd.args.exceptions;
 
 public class IllegalOptionException extends RuntimeException {
-    private String option;
+    private String parameter;
 
     public IllegalOptionException(String option) {
-        this.option = option;
+        this.parameter = option;
     }
 
-    public String getOption() {
-        return option;
+    public String getParameter() {
+        return parameter;
     }
 }

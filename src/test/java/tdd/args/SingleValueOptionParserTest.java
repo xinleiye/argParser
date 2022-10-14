@@ -1,8 +1,11 @@
 package tdd.args;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import tdd.args.exceptions.TooManyArgumentsException;
-//import org.junit.jupiter;
+import tdd.args.exceptions.InsufficientArgumentsException;
 
 import java.util.function.Function;
 
@@ -20,15 +23,15 @@ public class SingleValueOptionParserTest {
         assertEquals("p", e.getOption());
     }
 
-//    @ParameterizedTest
-//    @ValueSource(string = {"-p -l", "-p"})
-//    public void should_not_accept_insufficient_argument_for_single_value_option(String arguments) {
-//        InsufficientArgumentsException e = assertThrows(InsufficientArgumentsException.class, () -> {
-//            new SingleValueOptionParser<>(Integer::parseInt).parse(asList(arguments.split(" ")), option("p"));
-//        });
-//
-//        assertEquals("p", e.getOption());
-//    }
+    @ParameterizedTest
+    @ValueSource(strings = {"-p -l", "-p"})
+    public void should_not_accept_insufficient_argument_for_single_value_option(String arguments) {
+        InsufficientArgumentsException e = assertThrows(InsufficientArgumentsException.class, () -> {
+            new SingleValueOptionParser<>(0, Integer::parseInt).parse(asList(arguments.split(" ")), option("p"));
+        });
+
+        assertEquals("p", e.getOption());
+    }
 
     @Test
     public void should_set_default_value_to_zero_for_int_option() {

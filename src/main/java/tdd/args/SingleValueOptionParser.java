@@ -28,7 +28,6 @@ class SingleValueOptionParser<T> implements OptionParser<T> {
     }
 
     static Optional<List<String>> values(List<String> arguments, Option option, int expectedSize) {
-        Optional<List<String>> argumentList;
         int index = arguments.indexOf("-" + option.value());
         if (index == -1) {
             return Optional.empty();

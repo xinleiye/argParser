@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import tdd.args.exceptions.IllegalValueException;
 import tdd.args.exceptions.TooManyArgumentsException;
 import tdd.args.exceptions.InsufficientArgumentsException;
 
@@ -12,7 +13,6 @@ import java.lang.annotation.Annotation;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tdd.args.OptionParsersTest.BooleanOptionParserTest.option;
 import static java.util.Arrays.asList;
 
 public class OptionParsersTest {
@@ -80,18 +80,50 @@ public class OptionParsersTest {
             assertFalse(OptionParsers.bool().parse(asList(), option("l")));
         }
 
-        static Option option(String value) {
-            return new Option() {
-                @Override
-                public Class<? extends Annotation> annotationType() {
-                    return Option.class;
-                }
+    }
 
-                @Override
-                public String value() {
-                    return value;
-                }
-            };
+    @Nested
+    class ListOptionParser {
+        @Test
+        public void should_parse_list_value() {
+            assertArrayEquals(new String[]{"this", "is"}, OptionParsers.list(String[]::new, String::valueOf).parse(asList("-g", "this", "is"), option("g")));
         }
+
+        @Test
+        public void should_not_treat_negative_int_as_flag() {
+            assertArrayEquals(new Integer[]{-1, -2}, OptionParsers.list(Integer[]::new, Integer::parseInt).parse(asList("-g", "-1", "-2"), option("g")));
+        }
+
+        @Test
+        public void should_use_empty_array_as_default_value() {
+            String[] value = OptionParsers.list(String[]::new, String::valueOf).parse(asList(), option("g"));
+            assertEquals(0, value.length);
+        }
+
+        // TODO: -d a throw exception
+        @Test
+        public void should_throw_exception_if_value_parser_cant_parse_value() {
+            Function<String, String> parser = (it) -> {
+                throw new RuntimeException();
+            };
+            IllegalValueException e = assertThrows(IllegalValueException.class, () ->
+                    OptionParsers.list(String[]::new, parser).parse(asList("-g", "this", "is"), option("g")));
+            assertEquals("g", e.getOption());
+            assertEquals("this", e.getValue());
+        }
+    }
+
+    static Option option(String value) {
+        return new Option() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Option.class;
+            }
+
+            @Override
+            public String value() {
+                return value;
+            }
+        };
     }
 }
